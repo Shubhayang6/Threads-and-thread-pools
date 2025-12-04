@@ -4,6 +4,8 @@
 
 using namespace std;
 
+// Overview of how data race occurs
+
 void work(int id)
 {
     cout << "Hello from worker thread " << id << endl;
