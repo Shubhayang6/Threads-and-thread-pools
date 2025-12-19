@@ -5,7 +5,7 @@
 using namespace std;
 
 mutex lock_mutex;
-auto thread_id = this_thread::get_id();
+// auto thread_id = this_thread::get_id();
 
 void test(int x, int y)
 {
@@ -21,21 +21,23 @@ int main()
     auto RAII = [](int y)
     {
         lock_guard lock(lock_mutex);
-        cout << "The thread id is: " << thread_id << endl;
+        cout << "The J-thread id is: " << this_thread::get_id() << endl;
         cout << "RAII Index: " << y << endl;
     };
 
-    vector<thread> threads;
+    vector<jthread> J_threads;
 
     for (int i = 0; i < 10; ++i)
     {
-        threads.push_back(thread(RAII, i));
+        J_threads.push_back(jthread(RAII, i));
     }
 
-    for (int i = 0; i < 10; ++i)
-    {
-        threads[i].join();
-    }
+/* Since j_threads are included we need not perform separate joins. */
+
+    // for (int i = 0; i < 10; ++i)
+    // {
+    //     threads[i].join();
+    // }
 
     auto lambda = [](int x)
     {
