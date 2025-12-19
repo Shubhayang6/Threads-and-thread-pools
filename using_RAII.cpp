@@ -1,17 +1,33 @@
 #include <iostream>
 #include <thread>
+#include <mutex>
 using namespace std;
 
-void test(int x){
-    cout <<"Hello from Thread"<<endl;;
-    cout << "Argument passed in: "<<x<<endl;
+mutex lock_mutex;
+
+void test(int x, int y)
+{
+    lock_guard lock(lock_mutex);
+    cout << "Hello from Thread" << endl;
+    cout << "Argument passed in: " << x << endl;
+    cout << "The sum is: " << x + y << endl;
 }
 
 int main()
 {
-    thread my_thread(&test, 100);
+    auto lambda=[](int x)
+    {
+        lock_guard lock(lock_mutex);
+        cout << "Hello from the lambda function with value: " << x << endl;
+    };
+
+    thread my_thread(&test, 100, 200);
+    thread lambda_thread(lambda, 500);
+    
     my_thread.join();
-    cout << "Hello from my main thread"<<endl;
+    lambda_thread.join();
+
+    cout << "Hello from my main thread" << endl;
 
     return 0;
 }
